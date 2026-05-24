@@ -1,19 +1,35 @@
 ---
 name: flow
-description: Run the full feature pipeline from a curated prompt — generate a PRD, break it into tracker issues, then start implementing them. Use when the user invokes /flow, asks to "ship a feature end-to-end", or wants to chain PRD → issues → implementation in one step.
+description: Run the full feature pipeline from a curated prompt — create a worktree, generate a PRD, break it into tracker issues, then start implementing them. Use when the user invokes /flow, asks to "ship a feature end-to-end", or wants to chain PRD → issues → implementation in one step.
 ---
 
 # Flow
 
-Pipeline: **curated prompt → /to-prd → /to-issues → implement issues**.
+Pipeline: **worktree → curated prompt → /to-prd → /to-issues → implement issues**.
 
-The user's `$ARGUMENTS` is the curated feature prompt.
+## Invocation
+
+`/flow <branch-name> <prompt>`
+
+- The first whitespace-separated token in `$ARGUMENTS` is the **branch name**.
+- Everything after it is the **curated feature prompt**.
 
 ## Preflight (abort on failure)
 
-1. Run `git rev-parse --abbrev-ref HEAD`.
-2. If branch is `master` or `main`: **STOP**. Tell the user to create a feature branch (suggest `git checkout -b feat/<slug>`) and re-run.
-3. Run `git status --porcelain`. If there are uncommitted changes, ask the user whether to commit, stash, or abort before continuing.
+1. Parse `$ARGUMENTS`:
+   - `branch_name` = first whitespace-separated token.
+   - `prompt` = the remainder (trim leading whitespace).
+2. If `branch_name` is missing/empty: **STOP**. Tell the user the correct usage is `/flow <branch-name> <prompt>` and do not run any further steps.
+3. If `prompt` is missing/empty: **STOP**. Tell the user a curated prompt is required after the branch name and do not run any further steps.
+4. Validate `branch_name`: each `/`-separated segment must contain only letters, digits, dots, underscores, and dashes; max 64 chars total. If invalid, **STOP** and tell the user.
+
+## Create the worktree (always)
+
+1. Load the `EnterWorktree` tool via `ToolSearch` if it is not already available (`select:EnterWorktree`).
+2. Call `EnterWorktree` with `name: <branch_name>`. This creates an isolated worktree and switches the session into it.
+3. If `EnterWorktree` fails (already inside a worktree, name conflict, etc.), **STOP** and surface the error — do not fall back to running the pipeline on the original branch.
+
+All subsequent steps run **inside** the new worktree.
 
 ## Steps
 
@@ -24,7 +40,7 @@ The user's `$ARGUMENTS` is the curated feature prompt.
    - Implement the changes required to satisfy the issue.
    - Commit the changes with a message referencing the issue (e.g. `fix #<id>: <title>`). **Do not include the `Co-Authored-By: Claude` trailer or any Anthropic attribution.** Use a plain HEREDOC body.
    - Move to the next issue.
-4. Report: branch name, PRD link, issue links, implementation summary.
+4. Report: worktree path, branch name, PRD link, issue links, implementation summary.
 
 ## Commit rules
 
@@ -34,6 +50,7 @@ The user's `$ARGUMENTS` is the curated feature prompt.
 
 ## Guardrails
 
-- If at any step the current branch becomes `master`/`main`, abort immediately.
+- Never run the pipeline without first entering a worktree. If worktree creation fails, abort.
 - If `to-prd` or `to-issues` fails, stop and surface the error — do not start implementation on a partial state.
 - Do not push the branch or open a PR unless the user asks.
+- Do not call `ExitWorktree` automatically — leave the worktree intact for the user.
