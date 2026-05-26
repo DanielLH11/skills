@@ -20,6 +20,7 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- Before asking, check whether 1–2 file reads or a quick grep can answer the question. If yes, read instead of ask.
 
 ## 2. Simplicity First
 
@@ -71,6 +72,10 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+**Verification before "done."** Don't mark a task complete without proving it works. Run the tests, check the logs, or exercise the feature end-to-end — don't claim correctness from reading the diff alone. For UI changes, open it in a browser; if you can't, say so explicitly instead of claiming success.
+
+**Stop and re-plan if it's going sideways.** If an approach isn't converging after ~2 attempts — same error recurring, fixes creating new failures, results not matching expectations — stop patching. Step back, restate what's actually happening, and pick a different approach.
+
 ## 5. Risky Actions
 
 **Confirm before doing anything hard to reverse.**
@@ -87,6 +92,14 @@ When you hit an obstacle, fix the root cause — don't bypass safety checks to m
 
 - Default shell is PowerShell on Windows. Use PowerShell syntax (`$null`, `$env:VAR`, backtick line continuation) unless the project specifies otherwise.
 - Bash is available via the Bash tool for POSIX scripts when needed.
+
+## 7. Harness Features
+
+Reach for these when they fit — don't reinvent them.
+
+- **Subagents** (Explore, Plan, general-purpose): use for research that spans 3+ files or open-ended exploration. Keeps main context clean.
+- **Plan mode**: enter it before non-trivial multi-step work so we agree on the approach before any edits land.
+- **Memory**: save genuinely durable facts (user preferences, project decisions, validated approaches) — not ephemeral task state or things derivable from the code.
 
 ---
 
