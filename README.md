@@ -4,6 +4,10 @@ A personal collection of agent skills that extend capabilities across planning, 
 
 > Based on [Matt Pocock's skills](https://github.com/mattpocock/skills), with additional custom skills and modifications by Daniel Las Heras.
 
+## Global CLAUDE.md
+
+My personal global `CLAUDE.md` (behavioral guidelines for Claude Code) is available at [`examples/CLAUDE.md`](examples/CLAUDE.md) — copy it to `~/.claude/CLAUDE.md` if you want to use it.
+
 ## Planning & Design
 
 These skills help you think through problems before writing code.
