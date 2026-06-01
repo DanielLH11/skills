@@ -1,0 +1,13 @@
+# Organized skill sources live in engineering/ productivity/ misc/.
+# sync.ps1 flattens them into top-level <skill>/ folders so Claude Code can
+# discover them (it only scans direct children of ~/.claude/skills/).
+# Those flat copies are generated artifacts — ignore everything at the top
+# level except the tracked sources and meta files.
+/*
+!/engineering/
+!/productivity/
+!/misc/
+!/sync.ps1
+!/README.md
+!/LICENSE
+!/.gitignore

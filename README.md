@@ -8,6 +8,27 @@ A personal collection of agent skills that extend capabilities across planning, 
 
 My personal global `CLAUDE.md` (behavioral guidelines for Claude Code) is available at [`examples/CLAUDE.md`](examples/CLAUDE.md) — copy it to `~/.claude/CLAUDE.md` if you want to use it.
 
+## Repository layout
+
+Editable skill **sources** live under category folders, mirroring the upstream repo:
+
+```
+engineering/   productivity/   misc/
+└── <skill>/SKILL.md ...
+```
+
+Claude Code only discovers a skill when its `SKILL.md` is a **direct child** of `~/.claude/skills/` — it does *not* scan category subfolders. So `sync.ps1` flattens each `<category>/<skill>/` into a top-level `<skill>/` copy that Claude reads. Those flat copies are **generated artifacts** and are gitignored.
+
+### Installing / syncing
+
+This repo is meant to *be* your `~/.claude/skills/` directory. After cloning it there, or after editing any skill source, regenerate the flat copies:
+
+```powershell
+./sync.ps1
+```
+
+**Always edit the source under `engineering/ productivity/ misc/`, never the top-level flat copy** (it gets overwritten on the next sync). Run `/pull-skills` to sync from upstream — it writes into the category sources and re-runs `sync.ps1` automatically.
+
 ## Planning & Design
 
 These skills help you think through problems before writing code.
