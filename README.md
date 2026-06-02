@@ -3,6 +3,8 @@
 A personal collection of agent skills that extend capabilities across planning, development, and tooling.
 
 > Based on [Matt Pocock's skills](https://github.com/mattpocock/skills), with additional custom skills and modifications by Daniel Las Heras.
+>
+> The **marketing** skills are from [Alireza Rezvani's claude-skills](https://github.com/alirezarezvani/claude-skills) (MIT licensed) — full credit to the original creator. See [Marketing](#marketing) below.
 
 ## Global CLAUDE.md
 
@@ -13,7 +15,7 @@ My personal global `CLAUDE.md` (behavioral guidelines for Claude Code) is availa
 Editable skill **sources** live under category folders, mirroring the upstream repo:
 
 ```
-engineering/   productivity/   misc/
+engineering/   productivity/   misc/   marketing/
 └── <skill>/SKILL.md ...
 ```
 
@@ -27,7 +29,7 @@ This repo is meant to *be* your `~/.claude/skills/` directory. After cloning it 
 ./sync.ps1
 ```
 
-**Always edit the source under `engineering/ productivity/ misc/`, never the top-level flat copy** (it gets overwritten on the next sync). Run `/pull-skills` to sync from upstream — it writes into the category sources and re-runs `sync.ps1` automatically.
+**Always edit the source under `engineering/ productivity/ misc/ marketing/`, never the top-level flat copy** (it gets overwritten on the next sync). Run `/pull-skills` to sync from upstream — it writes into the category sources and re-runs `sync.ps1` automatically.
 
 ## Planning & Design
 
@@ -136,3 +138,76 @@ These skills help you write, refactor, and fix code.
   ```
   npx skills@latest add mattpocock/skills/obsidian-vault
   ```
+
+## Marketing
+
+A suite of 45 marketing skills covering content, SEO/AEO, CRO, paid ads, lifecycle, analytics, and product marketing.
+
+> **Credit:** These skills are created by **[Alireza Rezvani](https://github.com/alirezarezvani/claude-skills)** and are included here under their MIT license. Sources live under [`marketing/`](marketing/). To install the full upstream suite directly:
+>
+> ```bash
+> npx ai-agent-skills install alirezarezvani/claude-skills/marketing-skill
+> ```
+
+### Strategy & Ops
+
+- **marketing-ops** — Central router for the marketing skill ecosystem; orchestrates multi-skill campaigns.
+- **marketing-context** — Create and maintain the marketing context document every other marketing skill reads first.
+- **marketing-skills** — Index/overview of the marketing skill collection and its pods.
+- **marketing-ideas** — Generate marketing ideas, inspiration, and strategies for SaaS/software products.
+- **marketing-psychology** — Apply psychological principles, mental models, and behavioral science to marketing.
+- **marketing-strategy-pmm** — Product marketing: positioning, GTM strategy, competitive intelligence, and launches.
+- **marketing-demand-acquisition** — Demand-gen campaigns, paid-spend optimization, SEO strategy, and partnerships.
+- **launch-strategy** — Plan a product launch, feature announcement, or release strategy.
+- **pricing-strategy** — Design and communicate SaaS pricing — tiers, value metrics, and price increases.
+- **brand-guidelines** — Apply, document, and enforce brand guidelines.
+- **competitor-alternatives** — Build competitor comparison / alternative pages for SEO and sales enablement.
+- **prompt-engineer-toolkit** — Analyze and rewrite prompts; build reusable prompt templates for marketing.
+
+### Content & Copy
+
+- **copywriting** — Write, rewrite, or improve marketing copy for any page.
+- **copy-editing** — Edit, review, and improve existing marketing copy.
+- **content-strategy** — Plan a content strategy and decide what topics to cover.
+- **content-production** — Full content production pipeline from topic to publish-ready piece.
+- **content-humanizer** — Make AI-generated content sound genuinely human.
+- **content-creator** — Deprecated redirect that routes legacy "content creator" requests to the right specialist.
+- **social-content** — Create, schedule, and optimize social content across platforms.
+- **social-media-manager** — Social strategy, content calendars, community management, and growth.
+- **social-media-analyzer** — Analyze social campaign performance, engagement rates, and ROI.
+- **x-twitter-growth** — Grow on X/Twitter: audience building, viral content, and engagement analysis.
+
+### SEO & AEO
+
+- **seo-audit** — Audit, review, and diagnose technical SEO issues.
+- **ai-seo** — Optimize content to get cited by AI search engines (ChatGPT, Perplexity, AI Overviews, etc.).
+- **aeo** — Answer Engine Optimization: optimize content to be cited by LLMs.
+- **programmatic-seo** — Create SEO-driven pages at scale from templates and data.
+- **schema-markup** — Implement, audit, and validate structured data (schema markup).
+- **site-architecture** — Audit/plan website structure, URL hierarchy, navigation, and internal linking.
+
+### Conversion (CRO)
+
+- **page-cro** — Optimize conversions on any marketing page.
+- **form-cro** — Optimize non-signup forms (lead capture, contact, demo request).
+- **signup-flow-cro** — Optimize signup, registration, and trial activation flows.
+- **onboarding-cro** — Optimize post-signup onboarding, activation, and time-to-value.
+- **popup-cro** — Create and optimize popups, modals, overlays, and banners.
+- **paywall-upgrade-cro** — Create and optimize in-app paywalls, upgrade screens, and feature gates.
+- **app-store-optimization** — ASO: keyword research, competitor rankings, and metadata suggestions.
+- **ab-test-setup** — Plan, design, and implement A/B tests and experiments.
+
+### Demand, Ads & Lifecycle
+
+- **paid-ads** — Run paid campaigns on Google, Meta, LinkedIn, X, and other platforms.
+- **ad-creative** — Generate, iterate, and scale ad copy and creative.
+- **cold-email** — Write and sequence B2B cold outreach emails.
+- **email-sequence** — Build and optimize drip campaigns and lifecycle email flows.
+- **referral-program** — Design, launch, and optimize referral/affiliate programs.
+- **free-tool-strategy** — Build free tools for lead gen, SEO value, and brand awareness.
+- **churn-prevention** — Reduce churn via cancel flows, save offers, exit surveys, and dunning.
+
+### Analytics
+
+- **analytics-tracking** — Set up, audit, and debug analytics (GA4, GTM, event taxonomy, conversion tracking).
+- **campaign-analytics** — Multi-touch attribution, funnel conversion, and ROI analysis.

@@ -11,7 +11,7 @@
 
 $ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
-$categories = @('engineering', 'productivity', 'misc')
+$categories = @('engineering', 'productivity', 'misc', 'marketing')
 $count = 0
 
 foreach ($cat in $categories) {
