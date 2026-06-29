@@ -1,71 +1,31 @@
 ---
 name: flow
-description: Run the full feature pipeline from a curated prompt — create a worktree on a named git branch, generate a PRD, break it into tracker issues, implement them, commit, push the branch, then remove the worktree. Use when the user invokes /flow, asks to "ship a feature end-to-end", or wants to chain PRD → issues → implementation in one step.
+description: Chain a curated prompt into an open PR - acquire a treehouse worktree on a branch derived from the prompt, run /to-prd then /to-issues, implement, and gate-and-push via /no-mistakes. Use when the user invokes /flow, asks to "ship a feature end-to-end", or wants to chain PRD → issues → implementation in one step.
 ---
 
 # Flow
 
-Pipeline: **worktree (named branch) → curated prompt → /to-prd → /to-issues → implement → commit → push → remove worktree**.
-
-The commits live on the pushed branch, so the worktree is safe to remove afterward — the work is reviewed from the branch/commits on the remote.
+Chain a feature from a prompt to an open PR: **treehouse worktree → /to-prd → /to-issues → implement → gate & push (/no-mistakes)**. The branch name is derived from the prompt; commits carry a Jira key only when one is supplied.
 
 ## Invocation
 
-`/flow <branch-name> [--jira <KEY>] <prompt>`
+`/flow [--jira <KEY>] <prompt>`
 
-- The first whitespace-separated token in `$ARGUMENTS` is the **branch name**.
-- An optional `--jira <KEY>` flag (anywhere in the arguments) sets the **Jira task** to embed in commit messages.
-- Everything else is the **curated feature prompt**.
+- `--jira <KEY>` (optional, anywhere in the args): prefix every commit subject with `<KEY>`. If absent, omit it - never ask for one.
+- Everything else is the curated feature prompt.
 
-## Preflight (abort on failure)
+## Run
 
-1. Parse `$ARGUMENTS`:
-   - Extract the optional `--jira <KEY>` flag (and its value) wherever it appears, and remove both tokens from the arguments.
-   - `branch_name` = first remaining whitespace-separated token.
-   - `prompt` = the remainder (trim leading whitespace).
-   - `jira_key` = the `--jira` value, or empty if not provided.
-2. If `branch_name` is missing/empty: **STOP**. Tell the user the correct usage is `/flow <branch-name> [--jira <KEY>] <prompt>` and do not run any further steps.
-3. If `prompt` is missing/empty: **STOP**. Tell the user a curated prompt is required after the branch name and do not run any further steps.
-4. Validate `branch_name`: each `/`-separated segment must contain only letters, digits, dots, underscores, and dashes; max 64 chars total. If invalid, **STOP** and tell the user.
-5. If `jira_key` is present, validate it looks like a Jira key (e.g. `ABC-123`: letters, digits, dashes). If it looks malformed, surface this and ask before continuing.
-
-## Create the worktree (always)
-
-1. Load the `EnterWorktree` tool via `ToolSearch` if it is not already available (`select:EnterWorktree`).
-2. Call `EnterWorktree` with `name: <branch_name>`. This creates an isolated worktree on a new branch and switches the session into it.
-3. If `EnterWorktree` fails (already inside a worktree, name conflict, etc.), **STOP** and surface the error — do not fall back to running the pipeline on the original branch.
-4. Ensure the branch is named exactly `branch_name`. Run `git rev-parse --abbrev-ref HEAD`; if it differs from `branch_name`, rename it with `git branch -m <branch_name>`. If the rename fails, **STOP** and surface the error.
-
-All subsequent steps run **inside** the new worktree.
-
-## Steps
-
-1. **PRD** — invoke the `to-prd` skill with the curated prompt as context. Let it publish to the issue tracker (full pipeline). Capture the resulting PRD reference (issue URL / ID).
-2. **Issues** — invoke the `to-issues` skill against that PRD. Let it create the sub-issues on the tracker. Capture the full list of created issue titles and IDs.
-3. **Implement** — work through the issues in order, one at a time:
-   - Read the issue title and description.
-   - Implement the changes required to satisfy the issue.
-   - Commit the changes with a message referencing the issue. If `jira_key` is set, prefix the subject with it: `<jira_key> fix #<id>: <title>`. Otherwise: `fix #<id>: <title>`. **Do not include the `Co-Authored-By: Claude` trailer or any Anthropic attribution.** Use a plain HEREDOC body.
-   - Move to the next issue.
-4. **Push** — push the branch to origin: `git push -u origin <branch_name>`. If the push fails, **STOP**: leave the worktree intact (do not remove it) and surface the error so no committed work is lost.
-5. **Remove the worktree** — only after a successful push. Load `ExitWorktree` via `ToolSearch` if needed (`select:ExitWorktree`), then call it with `action: "remove"` and `discard_changes: true`. This is safe because every commit is already on the pushed remote branch. (The local branch is deleted with the worktree; review happens from the pushed branch.)
-6. **Briefing** — give a short summary after the run:
-   - Branch name (and that it was pushed to origin).
-   - Jira task, if provided.
-   - Each commit message created.
-   - PRD link and issue links.
-   - One-line implementation summary.
-
-## Commit rules
-
-- No `Co-Authored-By:` lines.
-- No "🤖 Generated with Claude Code" footer.
-- Honor pre-commit hooks; if a hook fails, fix and create a **new** commit (do not `--amend`, do not `--no-verify`).
-- Prefix the subject with `<jira_key>` when a Jira task was provided.
-
-## Guardrails
-
-- Never run the pipeline without first entering a worktree. If worktree creation fails, abort.
-- If `to-prd` or `to-issues` fails, stop and surface the error — do not start implementation on a partial state.
-- **Push the branch before removing the worktree.** If the push fails, keep the worktree and stop — never remove a worktree with `discard_changes: true` unless the commits are confirmed on the remote.
-- Do not open a PR unless the user asks.
+1. **Preflight** - if `prompt` is empty, **STOP** with the usage line. Derive `branch_name` by slugifying the prompt (lowercase, non-alphanumerics → single dash, trim/collapse dashes, ≤48 chars; fall back to `flow-<UTC yyyymmdd-hhmmss>` if empty). Announce it.
+2. **Worktree** - acquire an isolated [treehouse](https://github.com/kunchenguid/treehouse) worktree and branch off it:
+   ```sh
+   wt="$(treehouse get --lease --lease-holder "flow:<branch_name>")"
+   git -C "$wt" switch -c <branch_name>
+   ```
+   `--lease` is required; never run bare `treehouse`/`treehouse get` (the interactive subshell hangs the run). If acquisition fails, **STOP** - no fallback to the main checkout. treehouse moves only the shell cwd, not the session, so treat `$wt` as the operating root: run every command and resolve every file path under it. STOP if `<branch_name>` already exists.
+3. **PRD** - invoke `to-prd` with the prompt; capture the PRD reference.
+4. **Issues** - invoke `to-issues` against that PRD; capture the created issues.
+5. **Implement** - work the issues in order, committing each under `$wt` with a message referencing it: `<KEY> fix #<id>: <title>` when a Jira key is set, else `fix #<id>: <title>`. No `Co-Authored-By` / Claude attribution; honor hooks (fix and re-commit, never `--amend` / `--no-verify`).
+6. **Gate & push** - invoke `no-mistakes` with `prompt` as the `--intent` to validate, push, open the PR, and watch CI.
+   - `checks-passed` / `passed` → return the worktree: `treehouse return --force "$wt"` then `git -C "$wt" branch -D <branch_name> 2>/dev/null || true`.
+   - `failed` / `cancelled` (or no push) → **STOP**; leave the worktree leased (parked) so nothing is lost.
