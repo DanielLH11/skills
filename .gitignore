@@ -11,4 +11,5 @@
 !/sync.ps1
 !/README.md
 !/LICENSE
+!/.AGENTS.md
 !/.gitignore
