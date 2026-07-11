@@ -11,14 +11,14 @@ Chain a feature from a prompt to an open PR: **treehouse worktree → /to-spec �
 
 `/flow [--jira <KEY>] <prompt>`
 
-- `--jira <KEY>` (optional, anywhere in the args): prefix every commit subject with `<KEY>`. If absent, omit it - never ask for one.
-- Everything else is the curated feature prompt.
+- `--jira <KEY>` (optional, anywhere in the args): prefix every commit subject with `<KEY>`. If absent, omit it - never ask for one. The key belongs in commit subjects **only** - it never appears in the branch name.
+- Everything else, with the `--jira <KEY>` flag and its value removed, is the curated feature prompt. Strip the flag out **first**, then treat what remains as `prompt`.
 
 ## Run
 
 1. **Preflight** - if `prompt` is empty, **STOP** with the usage line. Derive `branch_name` as `<type>/<slug>`:
    - `<type>` is the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) type that best fits the prompt - one of `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `style`, `refactor`, `perf`, `test`. Default to `feat` when unclear.
-   - `<slug>` is the prompt slugified: lowercase, non-alphanumerics → single dash, trim/collapse dashes, ≤48 chars; fall back to `<UTC yyyymmdd-hhmmss>` if empty.
+   - `<slug>` is the **prompt** slugified - the feature description only, after the `--jira <KEY>` flag and value have been stripped: lowercase, non-alphanumerics → single dash, trim/collapse dashes, ≤48 chars; fall back to `<UTC yyyymmdd-hhmmss>` if empty. The branch name is derived purely from the standard type and the content of the change; a Jira key (e.g. `ABC-123`) must never survive into `<slug>`.
    - Always join with a forward slash (e.g. `feat/add-login`, `fix/null-crash`). Announce the branch name.
 2. **Worktree** - acquire an isolated [treehouse](https://github.com/kunchenguid/treehouse) worktree and branch off it:
    ```sh
