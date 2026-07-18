@@ -1,35 +1,54 @@
-# Agent Skills
+# Personal Claude Code Configuration
 
-A personal collection of agent skills that extend capabilities across planning, development, and tooling.
+A personal collection of Claude Code skills, agents, and global instructions for planning, development, marketing, and tooling.
 
 > Based on [Matt Pocock's skills](https://github.com/mattpocock/skills), with additional custom skills and modifications by Daniel Las Heras.
 >
-> The **marketing** skills are from [Alireza Rezvani's claude-skills](https://github.com/alirezarezvani/claude-skills) (MIT licensed) — full credit to the original creator. See [Marketing](#marketing) below.
-
-## Global CLAUDE.md
-
-My personal global `CLAUDE.md` (behavioral guidelines for Claude Code) is available at [`examples/CLAUDE.md`](examples/CLAUDE.md) — copy it to `~/.claude/CLAUDE.md` if you want to use it.
+> The **marketing** skills are from [Alireza Rezvani's claude-skills](https://github.com/alirezarezvani/claude-skills) under the MIT license.
+> Full credit belongs to the original creator.
+> See [Marketing](#marketing) below.
 
 ## Repository layout
 
-Editable skill **sources** live under category folders, mirroring the upstream repo:
+This repository is intended to be installed directly at `~/.claude/skills/` and acts as the source of truth for three configuration types.
 
+| Canonical source | Live Claude Code location | Purpose |
+| --- | --- | --- |
+| [`AGENTS.md`](AGENTS.md) | `~/.claude/CLAUDE.md` | Global behavioral and model-routing instructions |
+| [`agents/*.md`](agents/) | `~/.claude/agents/*.md` | Global custom agent definitions |
+| `<category>/<skill>/` | `~/.claude/skills/<skill>/` | Global skill definitions |
+
+Editable skill sources live under category folders:
+
+```text
+engineering/
+productivity/
+misc/
+marketing/
+└── <skill>/SKILL.md
 ```
-engineering/   productivity/   misc/   marketing/
-└── <skill>/SKILL.md ...
-```
 
-Claude Code only discovers a skill when its `SKILL.md` is a **direct child** of `~/.claude/skills/` — it does *not* scan category subfolders. So `sync.ps1` flattens each `<category>/<skill>/` into a top-level `<skill>/` copy that Claude reads. Those flat copies are **generated artifacts** and are gitignored.
+Claude Code only discovers a skill when its `SKILL.md` is a direct child of `~/.claude/skills/`.
+It does not scan the category subfolders used for organization in this repository.
+`sync.ps1` therefore flattens each `<category>/<skill>/` into a generated top-level `<skill>/` copy.
+Those flat copies are gitignored and must not be edited directly.
 
-### Installing / syncing
+The repository's `AGENTS.md` is the canonical global instruction file.
+The live `~/.claude/CLAUDE.md` is generated from it.
+The definitions under `agents/` are canonical, while the same-named files under `~/.claude/agents/` are generated deployment copies.
+The sync only overwrites agents with matching names and preserves unrelated live agent files.
 
-This repo is meant to *be* your `~/.claude/skills/` directory. After cloning it there, or after editing any skill source, regenerate the flat copies:
+### Installing and syncing
+
+Clone the repository as `~/.claude/skills/`, then publish all canonical configuration to Claude Code's discovery paths:
 
 ```powershell
 ./sync.ps1
 ```
 
-**Always edit the source under `engineering/ productivity/ misc/ marketing/`, never the top-level flat copy** (it gets overwritten on the next sync). Run `/pull-skills` to sync from upstream — it writes into the category sources and re-runs `sync.ps1` automatically.
+Run the same command after changing a skill source, an agent definition, or `AGENTS.md`.
+Always edit canonical files in the repository rather than generated top-level skill folders or live files outside the repository.
+Run `/pull-skills` to synchronize upstream skill sources and rerun `sync.ps1` automatically.
 
 ## Planning & Design
 
