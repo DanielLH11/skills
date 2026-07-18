@@ -25,3 +25,15 @@ When you are working on something that would benefit from being informed by Dani
 ## Voice Profile
 
 When you are talking/posting on behalf of Daniel using his identity, read ~/VOICE.md to see how Daniel talks.
+
+## Multi-Model Task Routing
+
+- Handle general tasks directly with the model selected for the current session.
+- Do not delegate merely because a task mentions frontend or backend work.
+- Use the `backend` agent when substantial backend implementation benefits from a dedicated worker.
+- Use the `frontend` agent when substantial frontend implementation benefits from a dedicated worker.
+- Use the `orchestrator` agent for planning and integration review when a non-trivial task spans multiple specialties.
+- When running as the `orchestrator` main agent, delegate independent backend and frontend work in parallel after defining shared contracts and file ownership.
+- When the orchestrator is used from a normal session, let it produce the plan, have the main session dispatch the specialist work, and return the results to the same orchestrator for integration review when practical.
+- Keep small, general, and tightly coupled tasks in the current session when delegation would add more overhead than value.
+- The coordinating session must review delegated work and verify the integrated result before reporting completion.
