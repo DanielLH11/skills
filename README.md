@@ -120,6 +120,10 @@ These skills help you write, refactor, and fix code.
 
 ## Tooling & Setup
 
+- **[write-dockerfile](misc/write-dockerfile/)** - Generate or improve a project Dockerfile using verified repository context and modern Docker build practices.
+
+- **[write-compose](misc/write-compose/)** - Generate or improve minimal Docker Compose configuration using the current Compose Specification.
+
 - **setup-pre-commit** — Set up Husky pre-commit hooks with lint-staged, Prettier, type checking, and tests.
 
   ```
