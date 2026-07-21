@@ -1,4 +1,4 @@
-# Organized skill sources live in engineering/ productivity/ misc/ marketing/.
+# Organized skill sources live in engineering/ productivity/ misc/ marketing/ languages/.
 # sync.ps1 flattens them into top-level <skill>/ folders so Claude Code can
 # discover them (it only scans direct children of ~/.claude/skills/).
 # Those flat copies are generated artifacts — ignore everything at the top
@@ -8,6 +8,8 @@
 !/productivity/
 !/misc/
 !/marketing/
+!/languages/
+!/docs/
 !/agents/
 !/sync.ps1
 !/README.md

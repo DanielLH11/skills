@@ -25,6 +25,7 @@ engineering/
 productivity/
 misc/
 marketing/
+languages/
 └── <skill>/SKILL.md
 ```
 
@@ -160,6 +161,54 @@ These skills help you write, refactor, and fix code.
 
   ```
   npx skills@latest add mattpocock/skills/obsidian-vault
+  ```
+
+## Language & Stack
+
+Task-scoped skills for specific languages and stacks, curated from high-install sources on [skills.sh](https://skills.sh).
+Catch-all language skills are deliberately avoided.
+See [docs/research/language-specific-skills.md](docs/research/language-specific-skills.md) for the research behind this policy.
+
+- **[typescript-advanced-types](languages/typescript-advanced-types/)** - Generics, conditional types, mapped types, template literals, and utility types.
+
+  ```
+  npx skills add wshobson/agents@typescript-advanced-types
+  ```
+
+- **[javascript-typescript-jest](languages/javascript-typescript-jest/)** - JS/TS testing with Jest: mocking strategies, test structure, and common patterns.
+
+  ```
+  npx skills add github/awesome-copilot@javascript-typescript-jest
+  ```
+
+- **[python-testing-patterns](languages/python-testing-patterns/)** - pytest, fixtures, mocking, parameterization, and TDD practices.
+
+  ```
+  npx skills add wshobson/agents@python-testing-patterns
+  ```
+
+- **[python-design-patterns](languages/python-design-patterns/)** - KISS, separation of concerns, single responsibility, and composition over inheritance in Python.
+
+  ```
+  npx skills add wshobson/agents@python-design-patterns
+  ```
+
+- **[java-springboot](languages/java-springboot/)** - Spring Boot application best practices.
+
+  ```
+  npx skills add github/awesome-copilot@java-springboot
+  ```
+
+- **[java-junit](languages/java-junit/)** - JUnit 5 unit testing, including data-driven tests.
+
+  ```
+  npx skills add github/awesome-copilot@java-junit
+  ```
+
+- **[tailwind-css-patterns](languages/tailwind-css-patterns/)** - Utility-first styling: responsive design, flexbox, grid, typography, and design systems.
+
+  ```
+  npx skills add giuseppe-trisciuoglio/developer-kit@tailwind-css-patterns
   ```
 
 ## Marketing

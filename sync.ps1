@@ -13,7 +13,7 @@ $agentsSource = Join-Path $root 'agents'
 $agentsDestination = Join-Path $claudeRoot 'agents'
 $globalInstructionsSource = Join-Path $root 'AGENTS.md'
 $globalInstructionsDestination = Join-Path $claudeRoot 'CLAUDE.md'
-$categories = @('engineering', 'productivity', 'misc', 'marketing')
+$categories = @('engineering', 'productivity', 'misc', 'marketing', 'languages')
 $count = 0
 
 if ((Split-Path $root -Leaf) -ne 'skills' -or (Split-Path $claudeRoot -Leaf) -ne '.claude') {
